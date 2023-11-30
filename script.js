@@ -25,14 +25,19 @@ async function getMovie() {
 
 function addMovieUI(movie) {
   const movieList = document.getElementById("movie_container");
-  const element = document.createElement("div");
-  const uri = `https://image.tmdb.org/t/p/w500${movie.results[2].poster_path}`;
-  element.innerHTML = `
-  <img src=${uri} width ="300"></img>
-    <strong>ID: </strong> ${movie.results[2].id}
-    <strong>Name: </strong> ${movie.results[2].title}
-  `;
-  movieList.appendChild(element);
+ 
+  movie.results.forEach((result) => {
+    const element = document.createElement("div");
+    const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
+
+    element.innerHTML = `
+      <img src="${uri}" width="300"></img>
+      <strong>ID: </strong> ${result.id}
+      <strong>Name: </strong> ${result.title}
+    `;
+
+    movieList.appendChild(element);
+  });
 }
 
 displayMovie();
