@@ -1,43 +1,41 @@
+import { apiKey } from "./api.js";
+console.log(apiKey)
 
-const options = {
-   method: 'GET',
-   headers: {
-     accept: 'application/json',
-     Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MzUyOTg1ZTljNzg4YzE3YmFmMmY3NjZhZWYyNDA3MCIsInN1YiI6IjY1NjY0ZTJhMTU2Y2M3MDBlYmMxMTk3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.yYL1HiqW4zSjwrCp_8GRmn-IO73Qqg8Co4H_ASgvQuE',
-    }
- };
-  
-  async function displayApod() {
-      const apodPropieties = await getApod();
-      console.log(apodPropieties);
-      addApodUI(apodPropieties);
+const apiURL = "https://api.themoviedb.org/3/discover/movie?api_key="
+
+
+async function displayMovie() {
+  const movieProperties = await getMovie();
+  console.log(movieProperties);
+  addMovieUI(movieProperties);
 }
-  
-  async function getApod() {
-    try {
-      const response = await fetch(`https://api.themoviedb.org/3/movie/157336/videos?api_key=7352985e9c788c17baf2f766aef24070`)
-      if (response.status === 404 ){
-        alert("No se encontró tu llave");
-        return;
-      }
-      return await response.json();
-    } catch (err) {
-      alert("Error al intentar conectar con el servidor");
-    }
-  }
-  
-  function addApodUI(apod) {
-    const apodList = document.getElementById("nasa_container");
-    const element = document.createElement("div");
-    element.innerHTML = `
-    <strong title: >ID: </strong> ${apod.id}
-      <strong date: >Name: </strong> ${apod.results[0].site}
-    `;
-    apodList.appendChild(element);
-  }
-  
-  displayApod();
 
+async function getMovie() {
+  try {
+    const response = await fetch(apiURL + apiKey);
+    if (response.status === 404) {
+      alert("No se encontró tu llave");
+      return;
+    }
+    return response.json();
+  } catch (err) {
+    alert("Error al intentar conectar con el servidor");
+  }
+}
+
+function addMovieUI(movie) {
+  const movieList = document.getElementById("movie_container");
+  const element = document.createElement("div");
+  const uri = `https://image.tmdb.org/t/p/w500${movie.results[2].poster_path}`;
+  element.innerHTML = `
+  <img src=${uri} width ="300"></img>
+    <strong>ID: </strong> ${movie.results[2].id}
+    <strong>Name: </strong> ${movie.results[2].title}
+  `;
+  movieList.appendChild(element);
+}
+
+displayMovie();
 //yo primero desde mi branch
 
 
