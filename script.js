@@ -1,18 +1,20 @@
 import { apiKey } from "./api.js";
-console.log(apiKey)
 
-const apiURL = "https://api.themoviedb.org/3/discover/movie?api_key="
+const apiURL = "https://api.themoviedb.org/3/discover/movie";
+let moviesArray = [];
 
+async function displayMovies() {
+  for (let i = 1; i <= 4; i++) {
+    const movieProperties = await getMovies(i);
+    addMoviesToArray(movieProperties);
+  }
 
-async function displayMovie() {
-  const movieProperties = await getMovie();
-  console.log(movieProperties);
-  addMovieUI(movieProperties);
+  displayAllMovies();
 }
 
-async function getMovie() {
+async function getMovies(page) {
   try {
-    const response = await fetch(apiURL + apiKey);
+    const response = await fetch(`${apiURL}?api_key=${apiKey}&page=${page}`);
     if (response.status === 404) {
       alert("No se encontró tu llave");
       return;
@@ -23,25 +25,26 @@ async function getMovie() {
   }
 }
 
-function addMovieUI(movie) {
+function addMoviesToArray(movie) {
+  moviesArray = moviesArray.concat(movie.results);
+}
+
+function displayAllMovies() {
   const movieList = document.getElementById("movie_container");
- 
-  movie.results.forEach((result) => {
+
+  moviesArray.forEach((result) => {
     const element = document.createElement("div");
     const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
 
     element.innerHTML = `
-      <img src="${uri}" width="300"></img>
       <strong>ID: </strong> ${result.id}
-      <strong>Name: </strong> ${result.title}
+      <strong>Title: </strong> ${result.title}
+      <strong>Date: </strong> ${result.release_date}
+      <div></div> 
+      <img src="${uri}" width="250"></img>
     `;
-
     movieList.appendChild(element);
   });
 }
 
-displayMovie();
-//yo primero desde mi branch
-
-
-  
+displayMovies();
