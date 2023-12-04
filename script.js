@@ -9,7 +9,8 @@ async function displayMovies() {
     addMoviesToArray(movieProperties);
   }
 
-  displayAllMovies();
+  const allMovies = moviesArray;
+  displayAllMovies(allMovies);
 }
 
 async function getMovies(page) {
@@ -29,10 +30,18 @@ function addMoviesToArray(movie) {
   moviesArray = moviesArray.concat(movie.results);
 }
 
-function displayAllMovies() {
-  const movieList = document.getElementById("movie_container");
+function filterPremierMovies() {
+  const currentDate = new Date();
+  return moviesArray.filter((result) => {
+    const releaseDate = new Date(result.release_date);
+    return releaseDate >= currentDate;
+  });
+}
 
-  moviesArray.forEach((result) => {
+function displayAllMovies(movies) {
+  const movieList = document.getElementById("movie_container");
+  movieList.innerHTML = '';
+  movies.forEach((result) => {
     const element = document.createElement("div");
     const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
 
@@ -46,5 +55,16 @@ function displayAllMovies() {
     movieList.appendChild(element);
   });
 }
+
+const select = document.getElementById("select");
+select.addEventListener("change", async () => {
+  if (select.value === "Estrenos") {
+    const premierMovies = filterPremierMovies();
+    displayAllMovies(premierMovies);
+  } else {
+    const allMovies = moviesArray;
+    displayAllMovies(allMovies);
+  }
+});
 
 displayMovies();
