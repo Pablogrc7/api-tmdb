@@ -53,14 +53,25 @@ function displayAllMovies(movies) {
 function createMovieElement(result) {
   const element = document.createElement("div");
   const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
-
   element.innerHTML = `
-    <strong>ID: </strong> ${result.id}
-    <strong>Title: </strong> ${result.title}
-    <strong>Date: </strong> ${result.release_date}
-    <div></div> 
-    <img src="${uri}" width="250"></img>
-  `;
+  <div class="container text-center">
+    <div class="row">
+      <div class="col">
+      <div class="flex">
+        <div class="card border-success mb-3 mx-auto" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">Pelicula: ${result.title}</h5>
+            <p class="card-text">Fecha: ${result.release_date}.</p>
+            <img src="${uri}" class="card-img-top" alt="..." width="250">
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+`;
+
   return element;
 }
 
