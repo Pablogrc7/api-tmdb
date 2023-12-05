@@ -58,27 +58,53 @@ function displayAllMovies(movies) {
 }
 
 const select = document.getElementById("select");
+const searchButton = document.getElementById("search");
+const movieNameInput = document.getElementById("movieName");
+
 select.addEventListener("change", async () => {
-  if (select.value === "Estrenos") {
+  const selectedValue = select.value;
+
+  if (selectedValue === "Estrenos") {
+    hideSearchElements();
     const premierMovies = filterPremierMovies();
     displayAllMovies(premierMovies);
   } else {
+    showSearchElements();
     const allMovies = moviesArray;
     displayAllMovies(allMovies);
   }
 });
 
-const searchButton = document.getElementById("search");
 searchButton.addEventListener("click", handleSearch);
 
-function handleSearch() {
-  const searchTerm = document.getElementById("movieName").value.toLowerCase();
+async function handleSearch() {
+  const searchTerm = movieNameInput.value.toLowerCase();
   const filteredMovies = filterMoviesByTitle(searchTerm);
-  displayAllMovies(filteredMovies);
+
+  if (filteredMovies.length === 0) {
+    displayNotFoundMessage("No se encontraron películas con ese título.");
+  } else {
+    displayAllMovies(filteredMovies);
+  }
+}
+
+function displayNotFoundMessage(message) {
+  const movieList = document.getElementById("movie_container");
+  movieList.innerHTML = `<p style="color: red;">${message}</p>`;
 }
 
 function filterMoviesByTitle(searchTerm) {
   return moviesArray.filter((result) => result.title.toLowerCase().includes(searchTerm));
+}
+
+function hideSearchElements() {
+  searchButton.style.display = "none";
+  movieNameInput.style.display = "none";
+}
+
+function showSearchElements() {
+  searchButton.style.display = "inline-block";
+  movieNameInput.style.display = "inline-block";
 }
 
 displayMovies();
