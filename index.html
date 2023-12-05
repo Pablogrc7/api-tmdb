@@ -7,14 +7,13 @@
 </head>
 <body>
     <select name="seleccionar" id="select">
-        <option value="selecciona">Peliculas</option>
+        <option value="Peliculas">Peliculas</option>
         <option value="Estrenos">Estrenos</option>
         <option value="Mas vistas">Mas vistas</option>
     </select>
-    <input name="search">
+    <input name="search" id="searchInput" oninput="handleSearch()">
     <div id="movie_container"></div>
-        <script type="module" src="script.js"></script>
-        <script type="module" src="api.js"></script>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="api.js"></script>
 </body>
 </html>
-

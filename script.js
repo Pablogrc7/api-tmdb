@@ -4,7 +4,7 @@ const apiURL = "https://api.themoviedb.org/3/discover/movie";
 let moviesArray = [];
 
 async function displayMovies() {
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 50; i++) {
     const movieProperties = await getMovies(i);
     addMoviesToArray(movieProperties);
   }
@@ -41,6 +41,7 @@ function filterPremierMovies() {
 function displayAllMovies(movies) {
   const movieList = document.getElementById("movie_container");
   movieList.innerHTML = '';
+  
   movies.forEach((result) => {
     const element = document.createElement("div");
     const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
@@ -66,5 +67,15 @@ select.addEventListener("change", async () => {
     displayAllMovies(allMovies);
   }
 });
+
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("input", () => {
+  const filteredMovies = filterMoviesByTitle(searchInput.value.toLowerCase());
+  displayAllMovies(filteredMovies);
+});
+
+function filterMoviesByTitle(searchTerm) {
+  return moviesArray.filter((result) => result.title.toLowerCase().includes(searchTerm));
+}
 
 displayMovies();
