@@ -1,27 +1,29 @@
 import { apiKey } from "./api.js";
 
 const apiURL = "https://api.themoviedb.org/3/discover/movie";
+const MAX_PAGES = 50;
+const SELECT_ESTRENOS = "Estrenos";
+
 let moviesArray = [];
 
 async function displayMovies() {
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= MAX_PAGES; i++) {
     const movieProperties = await getMovies(i);
     addMoviesToArray(movieProperties);
   }
 
-  const allMovies = moviesArray;
-  displayAllMovies(allMovies);
+  displayAllMovies(moviesArray);
 }
 
 async function getMovies(page) {
   try {
     const response = await fetch(`${apiURL}?api_key=${apiKey}&page=${page}`);
-    if (response.status === 404) {
-      alert("No se encontró tu llave");
-      return;
+    if (!response.ok) {
+      throw new Error(`Error fetching movies. Status: ${response.status}`);
     }
     return response.json();
   } catch (err) {
+    console.error("Error:", err.message);
     alert("Error al intentar conectar con el servidor");
   }
 }
@@ -32,29 +34,34 @@ function addMoviesToArray(movie) {
 
 function filterPremierMovies() {
   const currentDate = new Date();
-  return moviesArray.filter((result) => {
-    const releaseDate = new Date(result.release_date);
-    return releaseDate >= currentDate;
-  });
+  return moviesArray.filter((result) => new Date(result.release_date) >= currentDate);
 }
 
 function displayAllMovies(movies) {
   const movieList = document.getElementById("movie_container");
-  movieList.innerHTML = '';
-  
-  movies.forEach((result) => {
-    const element = document.createElement("div");
-    const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
+  const fragment = document.createDocumentFragment();
 
-    element.innerHTML = `
-      <strong>ID: </strong> ${result.id}
-      <strong>Title: </strong> ${result.title}
-      <strong>Date: </strong> ${result.release_date}
-      <div></div> 
-      <img src="${uri}" width="250"></img>
-    `;
-    movieList.appendChild(element);
+  movies.forEach((result) => {
+    const element = createMovieElement(result);
+    fragment.appendChild(element);
   });
+
+  movieList.innerHTML = '';
+  movieList.appendChild(fragment);
+}
+
+function createMovieElement(result) {
+  const element = document.createElement("div");
+  const uri = `https://image.tmdb.org/t/p/w500${result.poster_path}`;
+
+  element.innerHTML = `
+    <strong>ID: </strong> ${result.id}
+    <strong>Title: </strong> ${result.title}
+    <strong>Date: </strong> ${result.release_date}
+    <div></div> 
+    <img src="${uri}" width="250"></img>
+  `;
+  return element;
 }
 
 const select = document.getElementById("select");
@@ -64,14 +71,13 @@ const movieNameInput = document.getElementById("movieName");
 select.addEventListener("change", async () => {
   const selectedValue = select.value;
 
-  if (selectedValue === "Estrenos") {
+  if (selectedValue === SELECT_ESTRENOS) {
     hideSearchElements();
     const premierMovies = filterPremierMovies();
     displayAllMovies(premierMovies);
   } else {
     showSearchElements();
-    const allMovies = moviesArray;
-    displayAllMovies(allMovies);
+    displayAllMovies(moviesArray);
   }
 });
 
@@ -86,6 +92,8 @@ async function handleSearch() {
   } else {
     displayAllMovies(filteredMovies);
   }
+
+  movieNameInput.value = '';
 }
 
 function displayNotFoundMessage(message) {
