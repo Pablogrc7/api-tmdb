@@ -68,11 +68,14 @@ select.addEventListener("change", async () => {
   }
 });
 
-const searchInput = document.getElementById("searchInput");
-searchInput.addEventListener("input", () => {
-  const filteredMovies = filterMoviesByTitle(searchInput.value.toLowerCase());
+const searchButton = document.getElementById("search");
+searchButton.addEventListener("click", handleSearch);
+
+function handleSearch() {
+  const searchTerm = document.getElementById("movieName").value.toLowerCase();
+  const filteredMovies = filterMoviesByTitle(searchTerm);
   displayAllMovies(filteredMovies);
-});
+}
 
 function filterMoviesByTitle(searchTerm) {
   return moviesArray.filter((result) => result.title.toLowerCase().includes(searchTerm));
